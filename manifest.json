@@ -1,0 +1,19 @@
+{
+	"name": "TwitchFullscreenChat",
+	"version": "1.0",
+	"description": "Adds fullscreen chat extension to Twitch.",
+	
+	"content_scripts": [
+	{
+		"matches": ["*://*.twitch.tv/*"],
+		"js": ["jquery-1.12.4.js","jquery-ui.js","chat_fullscreen.js"],
+		"run_at": "document_end"
+	}
+	],
+	"web_accessible_resources": [
+		"jquery-1.12.4.js", "jquery-ui.js","chat_fullscreen.js"
+	],	
+	"manifest_version": 2,	
+	"permissions": ["webRequest", "webRequestBlocking", "*://*.twitch.tv/*", "activeTab"],
+	"update_url": "http://0.0.0.0"
+}
