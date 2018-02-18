@@ -1,4 +1,9 @@
 function switch_fullscreen() {
+<<<<<<< HEAD
+=======
+	//console.log( "Adding chat to fullscreen!" );
+	
+>>>>>>> eac9d60b0e0d23cbfe5680e19201aa4a4c490170
 	chat_box = $(`
     <div id="xx-chat" class="ui-widget-content" style="z-index: 1234; position: absolute; background: transparent; border: 0; opacity: 0.7;">
       <p style="padding-top: 10px; background: purple; opacity: 0.1;"><p/>
@@ -24,6 +29,10 @@ function switch_windowed(){
 
 function initChat() {
   $('head').append('<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css" />');
+<<<<<<< HEAD
+=======
+  //console.log( "Script started!" );
+>>>>>>> eac9d60b0e0d23cbfe5680e19201aa4a4c490170
   
   fullscreen_btn = $(`
 	<div id="xx-btn" style="z-index: 1234; background: transparent; opacity: 0.1; position: absolute; bottom:0; right:0; border: 0;">

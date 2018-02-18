@@ -1,5 +1,6 @@
 # Twitch Fullscreen Chat Extension
 Adds a chat overlay to fullscreen window in Twitch.
+![Fullscreen example](https://github.com/exploder2013/TwitchFullscreenChat/blob/master/fullscreen_example.PNG)
 
 # Supported browsers
   * Chrome
@@ -9,6 +10,11 @@ Adds a chat overlay to fullscreen window in Twitch.
 - If the user exits the fullscreen mode, the chat is automatically removed from the player.
 - Ability to move/resize the window.
 - Automatically loaded whenever user goes to a new streamer.
+
+# How to use
+- If installed correctly, click the "FS"(transparent) button on bottom right corner to go fullscreen with chat. 
+- All other Twitch buttons will retain their default functionality.
+![Button example](https://github.com/exploder2013/TwitchFullscreenChat/blob/master/fullscreen_button.PNG)
 
 # How to install manually (chrome extension)
 
