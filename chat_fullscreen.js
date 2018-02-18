@@ -1,6 +1,6 @@
 function switch_fullscreen() {
 	chat_box = $(`
-    <div id="xx-chat" class="ui-widget-content" style="z-index: 1234; position: absolute; background: transparent; border: 0; opacity: 0.7;">
+    <div id="xx-chat" class="ui-widget-content" style="z-index: 1234; position: absolute; background: transparent; border: 0; opacity: 0.8;">
       <p style="padding-top: 10px; background: purple; opacity: 0.1;"><p/>
       <iframe scrolling="yes" allowTransparency="true" id="xx-iframe" src="/embed${window.location.pathname}/chat?darkpopout"
           height="400" width="300"></iframe>
