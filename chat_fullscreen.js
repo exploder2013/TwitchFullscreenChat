@@ -47,8 +47,6 @@ function main() {
 	// Wait for fullscreen button to appear so we know that we're on a viewer page.
 	var checkExist = setInterval(function() {
 		if ($('.qa-fullscreen-button').length) {
-			
-			console.log("Exists!");
 			// Start the script.
 			initChat();
 			initFinished = true;
