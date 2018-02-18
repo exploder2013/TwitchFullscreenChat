@@ -10,7 +10,7 @@ Adds a chat overlay to fullscreen window in Twitch.
 - If the user exits the fullscreen mode, the chat is automatically removed from the player.
 - Ability to move/resize the window.
 - Automatically loaded whenever user goes to a new streamer.
-- Dragging/resizing ability (top transparent bar of the chat).
+- Dragging/resizing ability (transparent bar on top of the chat to drag around).
 
 # How to use
 - If installed correctly, click the "FS"(transparent) button on bottom right corner to go fullscreen with chat. 
