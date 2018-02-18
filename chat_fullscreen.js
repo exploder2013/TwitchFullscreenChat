@@ -1,6 +1,4 @@
 function switch_fullscreen() {
-	console.log( "Adding chat to fullscreen!" );
-	
 	chat_box = $(`
     <div id="xx-chat" class="ui-widget-content" style="z-index: 1234; position: absolute; background: transparent; border: 0; opacity: 0.7;">
       <p style="padding-top: 10px; background: purple; opacity: 0.1;"><p/>
@@ -26,7 +24,6 @@ function switch_windowed(){
 
 function initChat() {
   $('head').append('<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css" />');
-  console.log( "Script started!" );
   
   fullscreen_btn = $(`
 	<div id="xx-btn" style="z-index: 1234; background: transparent; opacity: 0.1; position: absolute; bottom:0; right:0; border: 0;">
@@ -50,6 +47,8 @@ function main() {
 	// Wait for fullscreen button to appear so we know that we're on a viewer page.
 	var checkExist = setInterval(function() {
 		if ($('.qa-fullscreen-button').length) {
+			
+			console.log("Exists!");
 			// Start the script.
 			initChat();
 			initFinished = true;
@@ -62,25 +61,30 @@ function main() {
 			if( retries >= maxRetries )
 			{
 				// We're not on a view browser page.
-				exit();
+				clearInterval(checkExist); // exit
 			}
 		}
 	}, 500); // check every 500ms
 }
 
-// Add a callback for leaving the page.
+// Add callbacks for leaving the page.
 $(document).on('click', 'a', onRedirect);
-function onRedirect() {
-	if( initFinished == true )
-	{
-		// Remove listeners
-		document.getElementById("xx-btn").removeEventListener("click", switch_fullscreen);
-		document.removeEventListener('webkitfullscreenchange', switch_windowed);
-		
-		// Restart script.
-		initFinished = false;
-		main();
+
+window.onpopstate = function(event) {
+	onRedirect();
+}
+
+function onRedirect() {	
+	
+	if ($('#xx-btn').length) {
+		$( "#xx-btn" ).remove();
 	}
+	
+	// Restart script.
+	setTimeout(function() {
+		main();
+	}, 500 );
+	
 }
 
 main();
