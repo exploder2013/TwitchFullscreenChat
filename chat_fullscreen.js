@@ -1,13 +1,13 @@
 function switch_fullscreen() {
 	chat_box = $(`
-    <div id="xx-chat" class="ui-widget-content" style="z-index: 1234; position: absolute; background: transparent; border: 0; opacity: 0.8;">
+    <div id="xx-chat" class="ui-widget-content" style="z-index: 1234; cursor:all-scroll; position: absolute; background: transparent; border: 0; opacity: 0.7;">
       <p style="padding-top: 10px; background: purple; opacity: 0.1;"><p/>
       <iframe scrolling="yes" allowTransparency="true" id="xx-iframe" src="/embed${window.location.pathname}/chat?darkpopout"
           height="400" width="300"></iframe>
     </div>`);
 	
 	$(".video-player__container").append(chat_box);
-	$(chat_box).draggable().resizable({alsoResize: "#xx-iframe"});
+	$(chat_box).draggable({iframeFix: true}).resizable({alsoResize: "#xx-iframe"});
 	
 	var fullscreen_button = document.getElementsByClassName("qa-fullscreen-button");
 	fullscreen_button[0].click();
