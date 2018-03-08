@@ -11,6 +11,7 @@ Adds a chat overlay to fullscreen window in Twitch.
 - Ability to move/resize the window.
 - Automatically loaded whenever user goes to a new streamer.
 - Dragging/resizing ability (transparent bar on top of the chat to drag around).
+- Fixes the bug with Twitch player where your mouse cursor doesn't dissaper after some time (in both fullscreen/windowed). 
 
 # How to use
 - If installed correctly, click the "FS"(transparent) button on bottom right corner to go fullscreen with chat. 
