@@ -39,6 +39,34 @@ function initChat() {
   
 }
 
+var timer;
+function addMouseHideEvents()
+{
+	// Add mousemove handler for video player.
+	$( ".player-overlay" ).mousemove( function( event ) 
+	{
+		clearTimeout( timer );
+		timer = 0;
+	
+		$( '.player-overlay' ).css( "cursor", "default" );
+
+		// Create timer for mouse hiding.
+		timer = setTimeout( function() {
+			$( '.player-overlay' ).css( "cursor", "none" );
+		}, 2000 );
+	});
+	
+	// Add mouseout handler for video player to show mouse.
+	$( ".player-overlay" ).mouseout( function( event ) 
+	{
+		clearTimeout( timer );
+		timer = 0;
+	
+		$( '.player-overlay' ).css( "cursor", "default" );
+	});
+	
+}
+
 var initFinished = false;
 function main() {
 	var maxRetries 	= 5;
@@ -50,6 +78,9 @@ function main() {
 			// Start the script.
 			initChat();
 			initFinished = true;
+		
+			// Add the mouse hiding event to player.
+			addMouseHideEvents();
 		
 			// Exit from wait.
 			clearInterval(checkExist);
