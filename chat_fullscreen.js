@@ -43,26 +43,26 @@ var timer;
 function addMouseHideEvents()
 {
 	// Add mousemove handler for video player.
-	$( ".player-overlay" ).mousemove( function( event ) 
+	$( ".video-player__container" ).mousemove( function( event ) 
 	{
 		clearTimeout( timer );
 		timer = 0;
 	
-		$( '.player-overlay' ).css( "cursor", "default" );
+		$( '.video-player__container' ).css( "cursor", "default" );
 
 		// Create timer for mouse hiding.
 		timer = setTimeout( function() {
-			$( '.player-overlay' ).css( "cursor", "none" );
+			$( '.video-player__container' ).css( "cursor", "none" );
 		}, 2000 );
 	});
 	
 	// Add mouseout handler for video player to show mouse.
-	$( ".player-overlay" ).mouseout( function( event ) 
+	$( ".video-player__container" ).mouseout( function( event ) 
 	{
 		clearTimeout( timer );
 		timer = 0;
 	
-		$( '.player-overlay' ).css( "cursor", "default" );
+		$( '.video-player__container' ).css( "cursor", "default" );
 	});
 	
 }
