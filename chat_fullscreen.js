@@ -1,8 +1,8 @@
 function switch_fullscreen() {
 	chat_box = $(`
-    <div id="xx-chat" class="ui-widget-content" style="z-index: 1234; cursor:all-scroll; position: absolute; background: transparent; border: 0; opacity: 0.7;">
+    <div id="xx-chat" class="ui-widget-content" style="z-index: 1234; cursor:all-scroll; position: absolute; background: transparent; border: 0;">
       <p style="padding-top: 10px; background: purple; opacity: 0.1;"><p/>
-      <iframe scrolling="yes" allowTransparency="true" id="xx-iframe" src="/embed${window.location.pathname}/chat?darkpopout"
+      <iframe scrolling="yes" style="opacity: 0.85;" allowTransparency="true" id="xx-iframe" src="/embed${window.location.pathname}/chat?darkpopout"
           height="400" width="300"></iframe>
     </div>`);
 	
@@ -22,9 +22,12 @@ function switch_windowed(){
 	}
 }
 
-function initChat() {
-  $('head').append('<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css" />');
-  
+function loadJQueryHeaders()
+{
+	 $('head').append('<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" type="text/css" />');
+}
+
+function initChatFullscreenButton() {
   fullscreen_btn = $(`
 	<div id="xx-btn" style="z-index: 1234; background: transparent; opacity: 0.1; position: absolute; bottom:0; right:0; border: 0;">
 		<button>FS</button>
@@ -69,14 +72,26 @@ function addMouseHideEvents()
 
 var initFinished = false;
 function main() {
-	var maxRetries 	= 5;
+	var maxRetries 	= 100;
 	var retries 	= 0;
 	
+	
+
 	// Wait for fullscreen button to appear so we know that we're on a viewer page.
 	var checkExist = setInterval(function() {
-		if ($('.qa-fullscreen-button').length) {
+
+		// Check if player is loaded and the miniplayer is not actiaved (not supported);
+		if ( $('.qa-fullscreen-button').length > 0 && $( "div[data-test-selector='persistent-player-mini-title']" ).length == 0 ) 
+		{
+			// Remove the old fullscreen button if it exists.
+			if ( $('#xx-btn').length > 0 ) 
+			{
+				$( "#xx-btn" ).remove();
+			}
+
 			// Start the script.
-			initChat();
+			loadJQueryHeaders();
+			initChatFullscreenButton();
 			initFinished = true;
 		
 			// Add the mouse hiding event to player.
@@ -93,6 +108,7 @@ function main() {
 				clearInterval(checkExist); // exit
 			}
 		}
+
 	}, 500); // check every 500ms
 }
 
@@ -103,16 +119,11 @@ window.onpopstate = function(event) {
 	onRedirect();
 }
 
-function onRedirect() {	
-	
-	if ($('#xx-btn').length) {
-		$( "#xx-btn" ).remove();
-	}
-	
+function onRedirect() {		
 	// Restart script.
 	setTimeout(function() {
 		main();
-	}, 500 );
+	}, 1000 );
 	
 }
 
