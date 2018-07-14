@@ -20,6 +20,15 @@ Adds a chat overlay to fullscreen window in Twitch.
 
 # How to install manually (chrome extension)
 
+* Using as a Tampermonkey script
+- ![Navigate to the Tampermonkey branch on this repo](https://github.com/exploder2013/TwitchFullscreenChat/tree/tampermonkey).
+- Get Tampermonkey Chrome extension.
+- Once installed, navigate to Tampermonkeys dashboard by using its extension icon in Chrome.
+- Click the '+' button to the left of 'Installed userscripts' button on the upper right side.
+- Copy&paste chat_fullscreen.js inside the editor and press Ctrl+S.
+- The script should be added and should work.
+
+* Using as a Chrome Extension (not recommeneded, unless you're using Chrome Developer/Canary)
 - Download all files and put them into same folder.
 - Go to chrome://extensions/ then tick "Developer mode" in the top right corner.
 - Click the "Load unpacked extension..." button in the top left and select the folder you moved all files into.
