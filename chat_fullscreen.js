@@ -1,14 +1,22 @@
 function switch_fullscreen() {
-	chat_box = $(`
+
+    // if chat already exists, remove it and change window state
+    if( $( "#xx-chat" ).length )
+    {
+        $( "#xx-chat" ).remove();
+    }
+
+
+	var chat_box = $(`
     <div id="xx-chat" class="ui-widget-content" style="z-index: 1234; cursor:all-scroll; position: absolute; background: transparent; border: 0;">
       <p style="padding-top: 10px; background: purple; opacity: 0.1;"><p/>
       <iframe scrolling="yes" style="opacity: 0.85;" allowTransparency="true" id="xx-iframe" src="/embed${window.location.pathname}/chat?darkpopout"
           height="400" width="300"></iframe>
     </div>`);
-	
+
 	$(".video-player__container").append(chat_box);
-	$(chat_box).draggable({iframeFix: true}).resizable({alsoResize: "#xx-iframe"});
-	
+	$(chat_box).draggable( {iframeFix: true, snap: ".pl-overlay" } ).resizable({alsoResize: "#xx-iframe"});
+
 	var fullscreen_button = document.getElementsByClassName("qa-fullscreen-button");
 	fullscreen_button[0].click();
 }
@@ -16,9 +24,12 @@ function switch_fullscreen() {
 var is_fullscreen = false;
 function switch_windowed(){
 	is_fullscreen = !is_fullscreen;
-	
+
 	if( !is_fullscreen ) {
-		$( "#xx-chat" ).remove();
+        if( $( "#xx-chat" ).length )
+        {
+            $( "#xx-chat" ).remove();
+        }
 	}
 }
 
@@ -28,18 +39,24 @@ function loadJQueryHeaders()
 }
 
 function initChatFullscreenButton() {
-  fullscreen_btn = $(`
+  /*
+  var fullscreen_btn = $(`
 	<div id="xx-btn" style="z-index: 1234; background: transparent; opacity: 0.1; position: absolute; bottom:0; right:0; border: 0;">
 		<button>FS</button>
 	</div>`);
-  	
-  $(".video-player__container").append(fullscreen_btn);
-  
+  */
+
+  var fullscreen_image = $(`
+      <input type="image" id="xx-btn" class="player-button" style="right: 10px;" src="https://www.materialui.co/materialIcons/navigation/fullscreen_white_192x192.png" />
+  `);
+
+  //$(".video-player__container").append(fullscreen_btn);
+  $(".player-buttons-right").append(fullscreen_image);
+
   // Add click event listener
   document.getElementById("xx-btn").addEventListener("click", switch_fullscreen);
   // Add ESC button handler (when exiting fullscreen)
   document.addEventListener('webkitfullscreenchange', switch_windowed);
-  
 }
 
 var timer;
