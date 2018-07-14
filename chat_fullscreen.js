@@ -1,3 +1,30 @@
+// ==UserScript==
+// @name         Twitch FullScreen Chat
+// @namespace    http://tampermonkey.net/
+// @version      0.3
+// @description  Adds a button to Twitch player to make it go fullscreen with chat window open.
+// @author       Exploder2013
+// @match        https://www.twitch.tv/*
+// @require      https://code.jquery.com/jquery-3.3.1.min.js
+// @require      https://code.jquery.com/ui/1.12.1/jquery-ui.min.js
+// @grant        none
+// ==/UserScript==
+
+var $ = window.jQuery;
+(function() {
+    'use strict';
+
+    // Load the main function
+    main()
+
+    // Add callbacks for leaving the page.
+    //$(document).on('click', 'a', onRedirect);
+
+    window.onpopstate = function(event) {
+      onRedirect();
+    }
+})();
+
 function switch_fullscreen() {
 	chat_box = $(`
     <div id="xx-chat" class="ui-widget-content" style="z-index: 1234; cursor:all-scroll; position: absolute; background: transparent; border: 0;">
