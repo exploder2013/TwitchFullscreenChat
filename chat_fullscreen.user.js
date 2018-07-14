@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Twitch FullScreen Chat
 // @version      0.3
-// @description  Adds a button to Twitch player to make it go fullscreen with chat window open.
+// @description  Adds a button to Twitch player that adds the ability to view Twitch in fullscreen with chat window open.
 // @copyright    2018, exploder2013
 // @license 	 MIT
 // @author       exploder2013
