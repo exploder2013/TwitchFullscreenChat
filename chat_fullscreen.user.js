@@ -19,7 +19,7 @@ var $ = window.jQuery;
     main()
 
     // Add callbacks for leaving the page.
-    //$(document).on('click', 'a', onRedirect);
+    $(document).on('click', 'a', onRedirect);
 
     window.onpopstate = function(event) {
       onRedirect();
@@ -163,4 +163,3 @@ function onRedirect() {
 		main();
 	}, 1000 );
 }
-
