@@ -92,6 +92,7 @@ function initChatFullscreenButton() {
   document.addEventListener('webkitfullscreenchange', switch_windowed);
 }
 
+
 var timer;
 function addMouseHideEvents()
 {
@@ -129,19 +130,13 @@ function main() {
 	var maxRetries 	= 100;
 	var retries 	= 0;
 
-
-
 	// Wait for fullscreen button to appear so we know that we're on a viewer page.
 	var checkExist = setInterval(function() {
 
 		// Check if player is loaded and the miniplayer is not actiaved (not supported);
-		if ( $('.qa-fullscreen-button').length > 0 && $( "div[data-test-selector='persistent-player-mini-title']" ).length == 0 )
+		if ( $('.qa-fullscreen-button').length !== 0 && $( "div[data-test-selector='persistent-player-mini-title']" ).length === 0 )
 		{
 			// Remove the old fullscreen button if it exists.
-			if ( $('#xx-btn').length > 0 )
-			{
-				$( "#xx-btn" ).remove();
-			}
 
 			// Start the script.
 			loadJQueryHeaders();
@@ -166,9 +161,18 @@ function main() {
 	}, 500); // check every 500ms
 }
 
+function cleanup()
+{
+	$( '#xx-btn' ).remove()
+	$( '#xx-chat' ).remove()
+}
+
 function onRedirect() {
 	// Restart script.
 	setTimeout(function() {
+		cleanup();
+
+		is_fullscreen = false
 		main();
 	}, 1000 );
 }
