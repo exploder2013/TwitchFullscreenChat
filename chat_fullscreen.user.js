@@ -29,10 +29,15 @@ var $ = window.jQuery;
 function switch_fullscreen() {
 
     // if chat already exists, remove it and change window state
-    if( $( "#xx-chat" ).length )
-    {
-        $( "#xx-chat" ).remove();
-    }
+	if( $( "#xx-chat" ).length )
+	{
+		$( "#xx-chat" ).remove();
+
+		var fullscreen_button = document.getElementsByClassName("qa-fullscreen-button");
+		fullscreen_button[0].click();
+
+		return;
+	}
 
 
 	var chat_box = $(`
