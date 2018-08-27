@@ -72,19 +72,19 @@ function loadJQueryHeaders()
 }
 
 function initChatFullscreenButton() {
-  /*
-  var fullscreen_btn = $(`
-	<div id="xx-btn" style="z-index: 1234; background: transparent; opacity: 0.1; position: absolute; bottom:0; right:0; border: 0;">
-		<button>FS</button>
-	</div>`);
-  */
 
-  var fullscreen_image = $(`
-      <input type="image" id="xx-btn" class="player-button" style="right: 10px;" src="https://www.materialui.co/materialIcons/navigation/fullscreen_white_192x192.png" />
-  `);
+	// Create fullscreen button if it doesn't exitst
+	if( $('#xx-btn').length === 0 )
+	{
+  		var fullscreen_image = $(`
+   		   <input type="image" id="xx-btn" class="player-button" style="right: 10px;" src="https://www.materialui.co/materialIcons/navigation/fullscreen_white_192x192.png" />
+  			`);
 
-  //$(".video-player__container").append(fullscreen_btn);
-  $(".player-buttons-right").append(fullscreen_image);
+  		$(".player-buttons-right").append(fullscreen_image);
+	} else {
+		// Remove old event handlers
+		$("#xx-btn").off();
+	}
 
   // Add click event listener
   document.getElementById("xx-btn").addEventListener("click", switch_fullscreen);
