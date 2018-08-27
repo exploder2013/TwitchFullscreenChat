@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Twitch FullScreen Chat
-// @version      0.3
+// @version      0.7
 // @description  Adds a button to Twitch player that adds the ability to view Twitch in fullscreen with chat window open.
 // @copyright    2018, exploder2013
 // @license 	 MIT
@@ -19,7 +19,7 @@ var $ = window.jQuery;
     main()
 
     // Add callbacks for leaving the page.
-    $(document).on('click', 'a', onRedirect);
+    $(document).on('click', 'a', onRedirect );
 
     window.onpopstate = function(event) {
       onRedirect();
