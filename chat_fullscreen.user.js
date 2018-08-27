@@ -112,6 +112,10 @@ function addMouseHideEvents()
 	// Add mouseout handler for video player to show mouse.
 	$( ".video-player__container" ).mouseout( function( event )
 	{
+		// Don't handle loading events, as they make mouse appear again
+		if( $( '.video-player__container' ).is( ':hover' ) )
+			return;
+		
 		clearTimeout( timer );
 		timer = 0;
 
