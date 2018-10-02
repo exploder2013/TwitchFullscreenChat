@@ -39,16 +39,20 @@ function changedFullscreen()
     },300);
 }
 
-    // if chat already exists, remove it and change window state
-	if( $( "#xx-chat" ).length )
-	{
-		$( "#xx-chat" ).remove();
+function RemoveChat()
+{
+    if( $( "#xx-chat" ).length )
+        $( "#xx-chat" ).remove();
+}
 
-		var fullscreen_button = document.getElementsByClassName("qa-fullscreen-button");
-		fullscreen_button[0].click();
+function LoadChat() {
+    if( $( "#xx-chat" ).length )
+    {
+        RemoveChat();
+        $( ".qa-fullscreen-button" ).click();
 
-		return;
-	}
+        return;
+    }
 
 
 	var chat_box = $(`
@@ -59,11 +63,8 @@ function changedFullscreen()
     </div>`);
 
 	$(".video-player__container").append(chat_box);
-	$(chat_box).draggable( {iframeFix: true, snap: ".pl-overlay" } ).resizable({alsoResize: "#xx-iframe"});
+	$(chat_box).draggable( {iframeFix: true, snap: ".pl-overlay" } ).resizable( {alsoResize: "#xx-iframe"} );
 
-	var fullscreen_button = document.getElementsByClassName("qa-fullscreen-button");
-	fullscreen_button[0].click();
-}
 
 var is_fullscreen = false;
 function switch_windowed(){
