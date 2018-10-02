@@ -65,17 +65,8 @@ function LoadChat() {
 	$(".video-player__container").append(chat_box);
 	$(chat_box).draggable( {iframeFix: true, snap: ".pl-overlay" } ).resizable( {alsoResize: "#xx-iframe"} );
 
-
-var is_fullscreen = false;
-function switch_windowed(){
-	is_fullscreen = !is_fullscreen;
-
-	if( !is_fullscreen ) {
-        if( $( "#xx-chat" ).length )
-        {
-            $( "#xx-chat" ).remove();
-        }
-	}
+    // Click fullscreen button
+    $( ".qa-fullscreen-button" ).click();
 }
 
 function loadJQueryHeaders()
@@ -98,10 +89,9 @@ function initChatFullscreenButton() {
 		$("#xx-btn").off();
 	}
 
-  // Add click event listener
-  document.getElementById("xx-btn").addEventListener("click", switch_fullscreen);
-  // Add ESC button handler (when exiting fullscreen)
-  document.addEventListener('webkitfullscreenchange', switch_windowed);
+    $( "#xx-btn" ).click(function() {
+        LoadChat()
+    });
 }
 
 
@@ -126,9 +116,8 @@ function addMouseHideEvents()
 	$( ".video-player__container" ).mouseout( function( event )
 	{
 		// Don't handle loading events, as they make mouse appear again
-		if( $( '.video-player__container' ).is( ':hover' ) )
-			return;
-		
+		if( $( '.video-player__container' ).is( ':hover' ) ) { return; }
+
 		clearTimeout( timer );
 		timer = 0;
 
@@ -182,9 +171,7 @@ function cleanup()
 function onRedirect() {
 	// Restart script.
 	setTimeout(function() {
-		cleanup();
-
-		is_fullscreen = false
-		main();
+		//cleanup();
+		//main();
 	}, 1000 );
 }
