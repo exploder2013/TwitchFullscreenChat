@@ -12,11 +12,15 @@
 // ==/UserScript==
 
 var $ = window.jQuery;
+var isFullscreen = false;
 (function() {
     'use strict';
 
     // Load the main function
     main()
+
+    document.addEventListener('webkitfullscreenchange', changedFullscreen, false);
+	document.addEventListener('fullscreenchange', changedFullscreen, false);
 
     // Add callbacks for leaving the page.
     $(document).on('click', 'a', onRedirect );
@@ -26,7 +30,14 @@ var $ = window.jQuery;
     }
 })();
 
-function switch_fullscreen() {
+function changedFullscreen()
+{
+    var fullscreenHandlerTimeout = setTimeout(function(){
+        //if we exit fullscreen restore default chat
+        isFullscreen = (window.innerHeight === screen.height);
+        if( !isFullscreen ) { RemoveChat(); }
+    },300);
+}
 
     // if chat already exists, remove it and change window state
 	if( $( "#xx-chat" ).length )
