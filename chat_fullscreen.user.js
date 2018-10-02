@@ -12,6 +12,7 @@
 // ==/UserScript==
 
 var $ = window.jQuery;
+var debug = false;
 var isFullscreen = false;
 (function() {
     'use strict';
