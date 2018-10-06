@@ -173,6 +173,6 @@ function onRedirect() {
 	// Restart script.
 	setTimeout(function() {
 		//cleanup();
-		//main();
+		main();
 	}, 1000 );
 }
