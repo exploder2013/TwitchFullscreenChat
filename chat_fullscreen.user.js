@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Twitch FullScreen Chat
-// @version      0.9
+// @version      0.11
 // @description  Adds a button to Twitch player that adds the ability to view Twitch in fullscreen with chat window open.
 // @copyright    2018, exploder2013
 // @license 	 MIT
@@ -14,6 +14,8 @@
 var $ = window.jQuery;
 var debug = false;
 var isFullscreen = false;
+var wasChatboxInitiallyHidden = false;
+
 (function() {
     'use strict';
 
@@ -42,8 +44,19 @@ function changedFullscreen()
 
 function RemoveChat()
 {
-    if( $( "#xx-chat" ).length )
+    if(!wasChatboxInitiallyHidden) {
+        var chatboxToggleButton = $("button[data-a-target='right-column__toggle-collapse-btn']");
+        var isChatboxVisible = $("div[data-a-target='right-column-chat-bar']").length > 0;
+
+        if(!isChatboxVisible && chatboxToggleButton.length > 0) {
+            chatboxToggleButton[0].click();
+            console.log("Main chatbox shown!");
+        }
+    }
+
+    if($( "#xx-chat" ).length > 0) {
         $( "#xx-chat" ).remove();
+    }
 }
 
 function LoadChat() {
@@ -55,6 +68,14 @@ function LoadChat() {
         return;
     }
 
+    var chatboxToggleButton = $("button[data-a-target='right-column__toggle-collapse-btn']");
+    var isChatboxVisible = $("div[data-a-target='right-column-chat-bar']").length > 0;
+
+    wasChatboxInitiallyHidden = !isChatboxVisible;
+    if(isChatboxVisible && chatboxToggleButton.length > 0) {
+        chatboxToggleButton[0].click();
+        console.log("Main chatbox hidden!");
+    }
 
 	var chat_box = $(`
     <div id="xx-chat" class="ui-widget-content" style="z-index: 1234; cursor:all-scroll; position: absolute; background: transparent; border: 0;">
