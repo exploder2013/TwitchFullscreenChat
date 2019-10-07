@@ -163,16 +163,22 @@ function main() {
 	}, 500); // check every 500ms
 }
 
-function cleanup()
+function CheckIfLoaded()
 {
-	$( '#xx-btn' ).remove()
-	$( '#xx-chat' ).remove()
+    return ( '#xx-btn' ).length === 0;
+}
+
+function Load()
+{
+    main();
 }
 
 function onRedirect() {
 	// Restart script.
 	setTimeout(function() {
-		//cleanup();
-		main();
+
+        if( !CheckIfLoaded() )
+            Load();
+
 	}, 1000 );
 }
