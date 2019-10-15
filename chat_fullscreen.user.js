@@ -33,6 +33,28 @@ var wasChatboxInitiallyHidden = false;
     }
 })();
 
+function getFullscreenButton() {
+    var FullscreenButtonPath = ".qa-fullscreen-button";
+    var query = $(FullscreenButtonPath);
+
+    if(query.length !== 1) {
+        return null;
+    }
+
+    return query;
+}
+
+function getVideoPlayer() {
+    var VideonPath = ".video-player__container";
+    var query = $(VideonPath);
+
+    if(query.length !== 1) {
+        return null;
+    }
+
+   return query;
+}
+
 function changedFullscreen()
 {
     var fullscreenHandlerTimeout = setTimeout(function(){
@@ -40,6 +62,17 @@ function changedFullscreen()
         isFullscreen = (window.innerHeight === screen.height);
         if( !isFullscreen ) { RemoveChat(); }
     },300);
+}
+
+function createMiniChatElement() {
+	var chatBox = $(`
+    <div id="xx-chat" class="ui-widget-content" style="z-index: 1234; cursor:all-scroll; position: absolute; background: transparent; border: 0;">
+      <p style="padding-top: 10px; background: purple; opacity: 0.1;"><p/>
+      <iframe scrolling="yes" style="opacity: 0.85;" allowTransparency="true" id="xx-iframe" src="/embed${window.location.pathname}/chat?darkpopout"
+          height="400" width="300"></iframe>
+    </div>`);
+
+    return chatBox;
 }
 
 function RemoveChat()
@@ -55,15 +88,22 @@ function RemoveChat()
     }
 
     if($( "#xx-chat" ).length > 0) {
+        console.log("Removing chat from player");
         $( "#xx-chat" ).remove();
     }
 }
 
 function LoadChat() {
-    if( $( "#xx-chat" ).length )
+    var fullscreenBtn = null;
+
+    if($( "#xx-chat" ).length > 0)
     {
         RemoveChat();
-        $( ".qa-fullscreen-button" ).click();
+
+        fullscreenBtn = getFullscreenButton();
+        if(fullscreenBtn !== null) {
+            fullscreenBtn.click();
+        }
 
         return;
     }
@@ -77,18 +117,23 @@ function LoadChat() {
         console.log("Main chatbox hidden!");
     }
 
-	var chat_box = $(`
-    <div id="xx-chat" class="ui-widget-content" style="z-index: 1234; cursor:all-scroll; position: absolute; background: transparent; border: 0;">
-      <p style="padding-top: 10px; background: purple; opacity: 0.1;"><p/>
-      <iframe scrolling="yes" style="opacity: 0.85;" allowTransparency="true" id="xx-iframe" src="/embed${window.location.pathname}/chat?darkpopout"
-          height="400" width="300"></iframe>
-    </div>`);
+    var player = getVideoPlayer();
+    if(player === null) {
+        console.log("Failed to locate the video player. Check if the id is still valid.");
+        return;
+    }
 
-	$(".video-player__container").append(chat_box);
-	$(chat_box).draggable( {iframeFix: true, snap: ".pl-overlay" } ).resizable( {alsoResize: "#xx-iframe"} );
+    var chatElement = createMiniChatElement();
+    console.log("Appending chat box to video element: " + player);
+
+	player.append(chatElement);
+	$(chatElement).draggable( {iframeFix: true, snap: ".video-player__container" } ).resizable( {alsoResize: "#xx-iframe"} );
 
     // Click fullscreen button
-    $( ".qa-fullscreen-button" ).click();
+    fullscreenBtn = getFullscreenButton();
+    if(fullscreenBtn !== null) {
+        fullscreenBtn.click();
+    }
 }
 
 function loadJQueryHeaders()
@@ -102,7 +147,7 @@ function initChatFullscreenButton() {
 	if( $('#xx-btn').length === 0 )
 	{
   		var fullscreen_image = $(`
-   		   <input type="image" id="xx-btn" class="player-button" style="right: 10px;" src="https://www.materialui.co/materialIcons/navigation/fullscreen_white_192x192.png" />
+   		   <input type="image" id="xx-btn" class="player-button" style="right: 10px; width: 3rem; height: 4rem;" src="https://www.materialui.co/materialIcons/navigation/fullscreen_white_192x192.png" />
   			`);
 
   		$(".player-buttons-right").append(fullscreen_image);
@@ -120,30 +165,33 @@ function initChatFullscreenButton() {
 var timer;
 function addMouseHideEvents()
 {
+    var player = getVideoPlayer();
 	// Add mousemove handler for video player.
-	$( ".video-player__container" ).mousemove( function( event )
+	player.mousemove( function( event )
 	{
 		clearTimeout( timer );
 		timer = 0;
 
-		$( '.video-player__container' ).css( "cursor", "default" );
+		player.css( "cursor", "default" );
 
 		// Create timer for mouse hiding.
 		timer = setTimeout( function() {
-			$( '.video-player__container' ).css( "cursor", "none" );
+			player.css( "cursor", "none" );
 		}, 2000 );
 	});
 
 	// Add mouseout handler for video player to show mouse.
-	$( ".video-player__container" ).mouseout( function( event )
+	player.mouseout( function( event )
 	{
 		// Don't handle loading events, as they make mouse appear again
-		if( $( '.video-player__container' ).is( ':hover' ) ) { return; }
+		if(player.is(':hover')) {
+            return;
+        }
 
 		clearTimeout( timer );
 		timer = 0;
 
-		$( '.video-player__container' ).css( "cursor", "default" );
+		player.css( "cursor", "default" );
 	});
 
 }
@@ -157,7 +205,9 @@ function main() {
 	var checkExist = setInterval(function() {
 
 		// Check if player is loaded and the miniplayer is not actiaved (not supported);
-		if ( $('.qa-fullscreen-button').length !== 0 && $( "div[data-test-selector='persistent-player-mini-title']" ).length === 0 )
+        var fullscreenButton = getFullscreenButton();
+        var miniPlayer = $("div[data-test-selector='persistent-player-mini-title']");
+		if (fullscreenButton !== null && miniPlayer.length === 0)
 		{
 			// Remove the old fullscreen button if it exists.
 
@@ -197,9 +247,8 @@ function Load()
 function onRedirect() {
 	// Restart script.
 	setTimeout(function() {
-
-        if( !CheckIfLoaded() )
+        if( !CheckIfLoaded() ) {
             Load();
-
+        }
 	}, 1000 );
 }
