@@ -1,22 +1,30 @@
 // ==UserScript==
 // @name         Twitch FullScreen Chat
-// @version      0.7
+// @version      0.11
 // @description  Adds a button to Twitch player that adds the ability to view Twitch in fullscreen with chat window open.
 // @copyright    2018, exploder2013
 // @license 	 MIT
 // @author       exploder2013
 // @match        https://www.twitch.tv/*
-// @require      https://code.jquery.com/jquery-3.3.1.min.js
+// @require https://code.jquery.com/jquery-3.4.1.min.js
 // @require      https://code.jquery.com/ui/1.12.1/jquery-ui.min.js
 // @grant        none
 // ==/UserScript==
 
 var $ = window.jQuery;
+var debug = false;
+var isFullscreen = false;
+var wasChatboxInitiallyHidden = false;
+
 (function() {
     'use strict';
 
     // Load the main function
+    loadJQueryHeaders();
     main()
+
+    document.addEventListener('webkitfullscreenchange', changedFullscreen, false);
+	document.addEventListener('fullscreenchange', changedFullscreen, false);
 
     // Add callbacks for leaving the page.
     $(document).on('click', 'a', onRedirect );
@@ -26,44 +34,108 @@ var $ = window.jQuery;
     }
 })();
 
-function switch_fullscreen() {
+function getFullscreenButton() {
+    //var FullscreenButtonPath = ".qa-fullscreen-button";
+    var FullscreenButtonPath = '[data-a-target="player-fullscreen-button"]';
+    var query = $(FullscreenButtonPath);
 
-    // if chat already exists, remove it and change window state
-	if( $( "#xx-chat" ).length )
-	{
-		$( "#xx-chat" ).remove();
+    if(query.length !== 1) {
+        return null;
+    }
 
-		var fullscreen_button = document.getElementsByClassName("qa-fullscreen-button");
-		fullscreen_button[0].click();
+    return query;
+}
 
-		return;
-	}
+function getVideoPlayer() {
+    var VideonPath = ".video-player__container";
+    var query = $(VideonPath);
 
+    if(query.length !== 1) {
+        return null;
+    }
 
-	var chat_box = $(`
+   return query;
+}
+
+function changedFullscreen()
+{
+    var fullscreenHandlerTimeout = setTimeout(function(){
+        //if we exit fullscreen restore default chat
+        isFullscreen = (window.innerHeight === screen.height);
+        if( !isFullscreen ) { RemoveChat(); }
+    },300);
+}
+
+function createMiniChatElement() {
+	var chatBox = $(`
     <div id="xx-chat" class="ui-widget-content" style="z-index: 1234; cursor:all-scroll; position: absolute; background: transparent; border: 0;">
       <p style="padding-top: 10px; background: purple; opacity: 0.1;"><p/>
-      <iframe scrolling="yes" style="opacity: 0.85;" allowTransparency="true" id="xx-iframe" src="/embed${window.location.pathname}/chat?darkpopout"
+      <iframe scrolling="yes" style="opacity: 0.85;" allowTransparency="true" id="xx-iframe" src="/embed${window.location.pathname}/chat?darkpopout&parent=twitch.tv"
           height="400" width="300"></iframe>
     </div>`);
 
-	$(".video-player__container").append(chat_box);
-	$(chat_box).draggable( {iframeFix: true, snap: ".pl-overlay" } ).resizable({alsoResize: "#xx-iframe"});
-
-	var fullscreen_button = document.getElementsByClassName("qa-fullscreen-button");
-	fullscreen_button[0].click();
+    return chatBox;
 }
 
-var is_fullscreen = false;
-function switch_windowed(){
-	is_fullscreen = !is_fullscreen;
+function RemoveChat()
+{
+    if(!wasChatboxInitiallyHidden) {
+        var chatboxToggleButton = $("button[data-a-target='right-column__toggle-collapse-btn']");
+        var isChatboxVisible = $("div[data-a-target='right-column-chat-bar']").length > 0;
 
-	if( !is_fullscreen ) {
-        if( $( "#xx-chat" ).length )
-        {
-            $( "#xx-chat" ).remove();
+        if(!isChatboxVisible && chatboxToggleButton.length > 0) {
+            chatboxToggleButton[0].click();
+            console.log("Main chatbox shown!");
         }
-	}
+    }
+
+    if($( "#xx-chat" ).length > 0) {
+        console.log("Removing chat from player");
+        $( "#xx-chat" ).remove();
+    }
+}
+
+function LoadChat() {
+    var fullscreenBtn = null;
+
+    if($( "#xx-chat" ).length > 0)
+    {
+        RemoveChat();
+
+        fullscreenBtn = getFullscreenButton();
+        if(fullscreenBtn !== null) {
+            fullscreenBtn.click();
+        }
+
+        return;
+    }
+
+    var chatboxToggleButton = $("button[data-a-target='right-column__toggle-collapse-btn']");
+    var isChatboxVisible = $("div[data-a-target='right-column-chat-bar']").length > 0;
+
+    wasChatboxInitiallyHidden = !isChatboxVisible;
+    if(isChatboxVisible && chatboxToggleButton.length > 0) {
+        chatboxToggleButton[0].click();
+        console.log("Main chatbox hidden!");
+    }
+
+    var player = getVideoPlayer();
+    if(player === null) {
+        console.log("Failed to locate the video player. Check if the id is still valid.");
+        return;
+    }
+
+    var chatElement = createMiniChatElement();
+    console.log("Appending chat box to video element: " + player);
+
+	player.append(chatElement);
+	$(chatElement).draggable( {iframeFix: true, snap: ".video-player__container" } ).resizable( {alsoResize: "#xx-iframe"} );
+
+    // Click fullscreen button
+    fullscreenBtn = getFullscreenButton();
+    if(fullscreenBtn !== null) {
+        fullscreenBtn.click();
+    }
 }
 
 function loadJQueryHeaders()
@@ -77,50 +149,52 @@ function initChatFullscreenButton() {
 	if( $('#xx-btn').length === 0 )
 	{
   		var fullscreen_image = $(`
-   		   <input type="image" id="xx-btn" class="player-button" style="right: 10px;" src="https://www.materialui.co/materialIcons/navigation/fullscreen_white_192x192.png" />
+   		   <input type="image" id="xx-btn" class="player-button" style="right: 10px; width: 3rem; height: 3rem;" src="https://www.materialui.co/materialIcons/navigation/fullscreen_white_192x192.png" />
   			`);
 
-  		$(".player-buttons-right").append(fullscreen_image);
+        $('.player-controls__right-control-group').append(fullscreen_image);
+  		//$(".player-buttons-right").append(fullscreen_image);
 	} else {
 		// Remove old event handlers
 		$("#xx-btn").off();
 	}
 
-  // Add click event listener
-  document.getElementById("xx-btn").addEventListener("click", switch_fullscreen);
-  // Add ESC button handler (when exiting fullscreen)
-  document.addEventListener('webkitfullscreenchange', switch_windowed);
+    $( "#xx-btn" ).click(function() {
+        LoadChat()
+    });
 }
 
 
 var timer;
 function addMouseHideEvents()
 {
+    var player = getVideoPlayer();
 	// Add mousemove handler for video player.
-	$( ".video-player__container" ).mousemove( function( event )
+	player.mousemove( function( event )
 	{
 		clearTimeout( timer );
 		timer = 0;
 
-		$( '.video-player__container' ).css( "cursor", "default" );
+		player.css( "cursor", "default" );
 
 		// Create timer for mouse hiding.
 		timer = setTimeout( function() {
-			$( '.video-player__container' ).css( "cursor", "none" );
+			player.css( "cursor", "none" );
 		}, 2000 );
 	});
 
 	// Add mouseout handler for video player to show mouse.
-	$( ".video-player__container" ).mouseout( function( event )
+	player.mouseout( function( event )
 	{
 		// Don't handle loading events, as they make mouse appear again
-		if( $( '.video-player__container' ).is( ':hover' ) )
-			return;
-		
+		if(player.is(':hover')) {
+            return;
+        }
+
 		clearTimeout( timer );
 		timer = 0;
 
-		$( '.video-player__container' ).css( "cursor", "default" );
+		player.css( "cursor", "default" );
 	});
 
 }
@@ -134,12 +208,14 @@ function main() {
 	var checkExist = setInterval(function() {
 
 		// Check if player is loaded and the miniplayer is not actiaved (not supported);
-		if ( $('.qa-fullscreen-button').length !== 0 && $( "div[data-test-selector='persistent-player-mini-title']" ).length === 0 )
+        var fullscreenButton = getFullscreenButton();
+        var miniPlayer = $("div[data-test-selector='persistent-player-mini-title']");
+		if (fullscreenButton !== null && miniPlayer.length === 0)
 		{
 			// Remove the old fullscreen button if it exists.
+            console.log("Loading the fullscreen chat module...");
 
 			// Start the script.
-			loadJQueryHeaders();
 			initChatFullscreenButton();
 			initFinished = true;
 
@@ -161,18 +237,21 @@ function main() {
 	}, 500); // check every 500ms
 }
 
-function cleanup()
+function CheckIfLoaded()
 {
-	$( '#xx-btn' ).remove()
-	$( '#xx-chat' ).remove()
+    return ( '#xx-btn' ).length === 0;
+}
+
+function Load()
+{
+    main();
 }
 
 function onRedirect() {
 	// Restart script.
 	setTimeout(function() {
-		cleanup();
-
-		is_fullscreen = false
-		main();
+        if( !CheckIfLoaded() ) {
+            Load();
+        }
 	}, 1000 );
 }
